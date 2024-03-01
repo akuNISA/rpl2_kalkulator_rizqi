@@ -7,24 +7,92 @@
 <body>
     <form class="kalkulator" name="calc">
         <input type="text" name="txt" class="value">
-        <span class="num clear" onclick="document.calc.txt.value =''">C</span>
-        <span class="num" onclick="document.calc.txt.value +='/'">/</span>
-        <span class="num" onclick="document.calc.txt.value +='*'">*</span>
-        <span class="num" onclick="document.calc.txt.value +='7'">7</span>
-        <span class="num" onclick="document.calc.txt.value +='8'">8</span>
-        <span class="num" onclick="document.calc.txt.value +='9'">9</span>
-        <span class="num" onclick="document.calc.txt.value +='-'">-</span>
-        <span class="num" onclick="document.calc.txt.value +='4'">4</span>
-        <span class="num" onclick="document.calc.txt.value +='5'">5</span>
-        <span class="num" onclick="document.calc.txt.value +='6'">6</span>
-        <span class="num plus" onclick="document.calc.txt.value +='+'">+</span>
-        <span class="num" onclick="document.calc.txt.value +='1'">1</span>
-        <span class="num" onclick="document.calc.txt.value +='2'">2</span>
-        <span class="num" onclick="document.calc.txt.value +='3'">3</span>
-        <span class="num" onclick="document.calc.txt.value +='0'">0</span>
-        <span class="num" onclick="document.calc.txt.value +='00'">00</span>
-        <span class="num" onclick="document.calc.txt.value +='.'">.</span>
-        <span class="num equal" onclick="document.calc.txt.value =eval(calc.txt.value)">=</span>
+        <span class="num clear">C</span>
+        <span class="num">/</span>
+        <span class="num">*</span>
+        <span class="num">7</span>
+        <span class="num">8</span>
+        <span class="num">9</span>
+        <span class="num">-</span>
+        <span class="num">4</span>
+        <span class="num">5</span>
+        <span class="num">6</span>
+        <span class="num plus">+</span>
+        <span class="num">1</span>
+        <span class="num">2</span>
+        <span class="num">3</span>
+        <span class="num">0</span>
+        <span class="num">00</span>
+        <span class="num">.</span>
+        <span class="num equal">=</span>
     </form>
+
+    <script>
+        var input = []
+
+        function hapus() {
+            var index = input.length - 1
+            if (input[index] && input[index].length > 1) {
+                input[index] = input[index].substring(0, input[index].length - 1)
+            } else {
+                delete input[index]
+            }
+
+            input = input.filter(e => Boolean(e))
+            console.log(input)
+            document.calc.txt.value = input.join('')
+        }
+
+        function inputAngka(angka) {
+            var index = input.length - 1
+            if (input[index]?.includes(".") && angka == ".") {
+                return;
+            }
+
+            if (['+', '-', '*', '/'].includes(input[index]) && ['+', '-', '*', '/'].includes(angka)) {
+                input[index] = angka
+                document.calc.txt.value = input.join('')
+                return;
+            }
+
+            if (['*', '/'].includes(angka) && input.length == 0) {
+                return
+            }
+
+            if (angka.includes('0') && ['+', '-', '*', '/'].includes(input[index])) {
+                input[index+1] = '0'
+                document.calc.txt.value = input.join('')
+                return
+            }
+
+            if (input.length == 0 || ['+', '-', '*', '/'].includes(input[index]) || ['+', '-', '*', '/'].includes(angka)) {
+                input[index+1] = angka
+            } else {
+                input[index] += angka
+            }
+            console.log(input)
+            document.calc.txt.value = input.join('')
+        }
+
+        function hitung() {
+            document.calc.txt.value = eval(input.join(''))
+        }
+
+        document.querySelectorAll('.num').forEach((el) => {
+            el.addEventListener('click', (e) => {
+                if (e.target.innerHTML == 'C') {
+                    hapus()
+                    return
+                }
+
+                if (e.target.innerHTML == '=') {
+                    hitung()
+                    return
+                }
+
+                inputAngka(e.target.innerHTML)
+            })
+        })
+    </script>
 </body>
 </html>
